@@ -76,8 +76,10 @@ public static class Pinger
 
     private static Status? ParseStatusResponse(NetworkStream stream)
     {
-        var packetLength = DataCodec.DecodeVarInt(stream);
-        var packetId = DataCodec.DecodeVarInt(stream);
+        // Discard packet length
+        _ = DataCodec.DecodeVarInt(stream);
+        // Discard packet ID
+        _ = DataCodec.DecodeVarInt(stream);
         var payloadLength = DataCodec.DecodeVarInt(stream);
         var payload = DataCodec.DecodeString(stream, payloadLength);
 
@@ -87,8 +89,10 @@ public static class Pinger
     private static long ParsePingResponse(NetworkStream stream)
     {
         var buffer = new byte[8];
-        var packetLength = DataCodec.DecodeVarInt(stream);
-        var packetId = DataCodec.DecodeVarInt(stream);
+        // Discard packet length
+        _ = DataCodec.DecodeVarInt(stream);
+        // Discard packet ID
+        _ = DataCodec.DecodeVarInt(stream);
 
         stream.ReadExactly(buffer);
 
