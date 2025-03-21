@@ -27,5 +27,5 @@ public class Status(
 
     [JsonPropertyName("modinfo")] public ModInfo? ModInfo { get; init; } = modInfo;
 
-    [JsonIgnore] public long Ping { get; set; }
+    [JsonIgnore] public double Ping { get; set; }
 }
