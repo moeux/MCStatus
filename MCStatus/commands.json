@@ -31,9 +31,9 @@
     }
   ],
   "nameLocalizations": {
-    "en-US": "status"
+    "de-DE": "status"
   },
   "descriptionLocalizations": {
-    "en-US": "Frage den Status eines Minecraft Servers ab."
+    "de-DE": "Frage den Status eines Minecraft Servers ab."
   }
 }
