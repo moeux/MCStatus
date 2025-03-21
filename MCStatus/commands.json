@@ -1,0 +1,39 @@
+{
+  "name": "status",
+  "description": "Query the status of a minecraft server.",
+  "options": [
+    {
+      "name": "server",
+      "description": "The server to query, can be either an IP or a domain.",
+      "type": "string",
+      "isRequired": true,
+      "isDefault": true,
+      "nameLocalizations": {
+        "de-DE": "server"
+      },
+      "descriptionLocalizations": {
+        "de-DE": "Der Server, dessen Status du anfragen möchtest. Kann eine IP oder eine URL sein."
+      }
+    },
+    {
+      "name": "port",
+      "description": "The server port, defaults to 25565.",
+      "type": "integer",
+      "isRequired": false,
+      "minValue": 1024,
+      "maxValue": 65535,
+      "nameLocalizations": {
+        "de-DE": "port"
+      },
+      "descriptionLocalizations": {
+        "de-DE": "Der Server Port, Standardwert ist 25565."
+      }
+    }
+  ],
+  "nameLocalizations": {
+    "en-US": "status"
+  },
+  "descriptionLocalizations": {
+    "en-US": "Frage den Status eines Minecraft Servers ab."
+  }
+}
