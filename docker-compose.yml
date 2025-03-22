@@ -1,0 +1,11 @@
+﻿services:
+  mcstatus:
+    container_name: "mcstatus"
+    image: mcstatus
+    build:
+      context: .
+      dockerfile: MCStatus/Dockerfile
+    environment:
+      MCSTATUS__DISCORD__COMMANDPATH: ${MCSTATUS__DISCORD__COMMANDPATH}
+      MCSTATUS__DISCORD__REGISTERCOMMANDS: ${MCSTATUS__DISCORD__REGISTERCOMMANDS}
+      MCSTATUS__DISCORD__TOKEN: ${MCSTATUS__DISCORD__TOKEN}
