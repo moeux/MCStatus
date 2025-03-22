@@ -22,7 +22,7 @@ public class DiscordBotService(
     {
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
-            GatewayIntents = GatewayIntents.Guilds
+            GatewayIntents = GatewayIntents.None
         });
 
         _client.Log += Log;
