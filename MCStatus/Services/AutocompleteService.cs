@@ -19,7 +19,6 @@ public class AutocompleteService(StatusQueryService service)
                 new AutocompleteResult("port", server.Port)
             ]);
 
-
         await interaction.RespondAsync(previousRequests);
     }
 }
