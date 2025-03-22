@@ -46,6 +46,8 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
             return;
         }
 
+        await command.DeferAsync(true, GetRequestOptions(cancellationToken));
+
         try
         {
             var status = await service.RequestStatusAsync(new Server
@@ -57,7 +59,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
 
             if (status is null)
             {
-                await Respond(
+                await Followup(
                     command,
                     "The server is unfortunately not reachable.",
                     "Der Server ist leider nicht erreichbar.",
@@ -71,7 +73,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
             using var stream = new MemoryStream(bytes);
             using var fileAttachment = new FileAttachment(stream, $"{Guid.NewGuid()}.png", isThumbnail: true);
 
-            await command.RespondWithFileAsync(
+            await command.FollowupWithFileAsync(
                 fileAttachment,
                 embed: CreateEmbed(ipOrDomain, port, fileAttachment.FileName, status),
                 options: GetRequestOptions(cancellationToken)
@@ -79,7 +81,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
         }
         catch (Exception)
         {
-            await Respond(
+            await Followup(
                 command,
                 "Unfortunately this did not work, please check your input!",
                 "Das hat leider nicht funktioniert, bitte überprüfe deine Angaben!",
@@ -116,6 +118,26 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
             );
         else
             await command.RespondAsync(
+                defaultText,
+                ephemeral: true,
+                options: GetRequestOptions(cancellationToken)
+            );
+    }
+
+    private static async Task Followup(
+        SocketSlashCommand command,
+        string defaultText,
+        string localizedText,
+        CancellationToken cancellationToken = default)
+    {
+        if (command.UserLocale is "de")
+            await command.FollowupAsync(
+                localizedText,
+                ephemeral: true,
+                options: GetRequestOptions(cancellationToken)
+            );
+        else
+            await command.FollowupAsync(
                 defaultText,
                 ephemeral: true,
                 options: GetRequestOptions(cancellationToken)
