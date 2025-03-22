@@ -8,11 +8,8 @@
       "type": "string",
       "isRequired": true,
       "isDefault": true,
-      "nameLocalizations": {
-        "de-DE": "server"
-      },
       "descriptionLocalizations": {
-        "de-DE": "Der Server, dessen Status du anfragen möchtest. Kann eine IP oder eine URL sein."
+        "de": "Der Server, dessen Status du anfragen möchtest. Kann eine IP oder eine URL sein."
       }
     },
     {
@@ -22,18 +19,12 @@
       "isRequired": false,
       "minValue": 1024,
       "maxValue": 65535,
-      "nameLocalizations": {
-        "de-DE": "port"
-      },
       "descriptionLocalizations": {
-        "de-DE": "Der Server Port, Standardwert ist 25565."
+        "de": "Der Server Port, Standardwert ist 25565."
       }
     }
   ],
-  "nameLocalizations": {
-    "de-DE": "status"
-  },
   "descriptionLocalizations": {
-    "de-DE": "Frage den Status eines Minecraft Servers ab."
+    "de": "Frage den Status eines Minecraft Servers ab."
   }
 }
