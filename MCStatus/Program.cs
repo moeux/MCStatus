@@ -17,7 +17,7 @@ internal static class Program
         builder.Configuration.AddEnvironmentVariables($"{ConfKeys.Prefix}__");
 
         builder.Services
-            .AddMemoryCache(options => options.SizeLimit = 1000)
+            .AddMemoryCache()
             .AddOptionsWithValidateOnStart<DiscordBotOptions>()
             .Configure(options =>
             {
