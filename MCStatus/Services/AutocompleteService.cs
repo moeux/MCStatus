@@ -13,11 +13,9 @@ public class AutocompleteService(StatusQueryService service)
         var previousRequests = service.GetPreviousRequests(interaction.User.Id)
             .Where(server => server.Address.Contains(input, StringComparison.InvariantCultureIgnoreCase))
             .Take(25)
-            .SelectMany(server => (AutocompleteResult[])
-            [
-                new AutocompleteResult("server", server.Address),
-                new AutocompleteResult("port", server.Port)
-            ]);
+            .SelectMany(server => interaction.Data.Current.Name is "server"
+                ? (AutocompleteResult[]) [new AutocompleteResult(server.Address, server.Address)]
+                : (AutocompleteResult[]) [new AutocompleteResult(server.Port.ToString(), server.Port.ToString())]);
 
         await interaction.RespondAsync(previousRequests);
     }
