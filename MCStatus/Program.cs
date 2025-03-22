@@ -34,6 +34,7 @@ internal static class Program
 
         builder.Services.AddHostedService<DiscordBotService>();
         builder.Services.AddSingleton<StatusQueryService>();
+        builder.Services.AddSingleton<AutocompleteService>();
         builder.Services.AddScoped<ICommandHandler, StatusCommand>();
 
         var host = builder.Build();

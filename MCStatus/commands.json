@@ -8,6 +8,7 @@
       "type": "string",
       "isRequired": true,
       "isDefault": true,
+      "isAutoComplete": true,
       "descriptionLocalizations": {
         "de": "Der Server, dessen Status du anfragen möchtest. Kann eine IP oder eine URL sein."
       }

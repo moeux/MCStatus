@@ -12,6 +12,7 @@ namespace MCStatus.Services;
 
 public class DiscordBotService(
     IServiceScopeFactory serviceScopeFactory,
+    AutocompleteService autocompleteService,
     IOptions<DiscordBotOptions> options,
     ILogger<DiscordBotService> logger) : BackgroundService
 {
@@ -27,6 +28,7 @@ public class DiscordBotService(
 
         _client.Log += Log;
         _client.Ready += () => RegisterCommandsAsync(stoppingToken);
+        _client.AutocompleteExecuted += autocompleteService.AutocompleteStatusCommand;
 
         await _client.LoginAsync(TokenType.Bot, options.Value.Token);
         await _client.StartAsync();

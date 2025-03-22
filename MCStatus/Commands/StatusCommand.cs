@@ -50,7 +50,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
 
         try
         {
-            var status = await service.RequestStatusAsync(new Server
+            var status = await service.RequestStatusAsync(command.User.Id, new Server
             {
                 Address = ipOrDomain,
                 Port = port,
