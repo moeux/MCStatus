@@ -75,7 +75,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
 
             await command.FollowupWithFileAsync(
                 fileAttachment,
-                embed: CreateEmbed(ipOrDomain, port, fileAttachment.FileName, status),
+                embed: CreateEmbed(ipOrDomain, port, fileAttachment.FileName, status, command.UserLocale),
                 options: GetRequestOptions(cancellationToken)
             );
         }
@@ -144,7 +144,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
             );
     }
 
-    private static Embed CreateEmbed(string ipOrDomain, ushort port, string fileName, Status status)
+    private static Embed CreateEmbed(string ipOrDomain, ushort port, string fileName, Status status, string locale)
     {
         var embed = new EmbedBuilder();
 
@@ -152,23 +152,33 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
             .WithColor(GetGradientColor(status.Ping))
             .WithCurrentTimestamp()
             .WithThumbnailUrl($"attachment://{fileName}")
-            .AddField("Description", status.Description.Text)
-            .AddField("Online Players", status.Players.Online, true)
-            .AddField("Max Players", status.Players.Max, true)
+            .AddField(locale is "de" ? "Beschreibung" : "Description", status.Description.Text)
+            .AddField(locale is "de" ? "Online Spieler" : "Online Players", status.Players.Online, true)
+            .AddField(locale is "de" ? "Maximale Spieleranzahl" : "Max Players", status.Players.Max, true)
             // Empty field for layout purposes
             .AddField("\u200B", "\u200B", true)
             .AddField("Version", status.Version.ToString(), true)
             .AddField("Ping", $"{status.Ping:F2} ms", true)
             // Empty field for layout purposes
             .AddField("\u200B", "\u200B", true)
-            .AddField("Enforces Secure Chat?", status.EnforcesSecureChat ? "\u2705" : "\u274c", true)
-            .AddField("Prevents Chat Reports?", status.PreventsChatReports ? "\u2705" : "\u274c", true);
+            .AddField(
+                locale is "de" ? "Erzwingt sicheren Chat?" : "Enforces Secure Chat?",
+                status.EnforcesSecureChat ? "\u2705" : "\u274c",
+                true)
+            .AddField(
+                locale is "de" ? "Verhindert Chat Reports?" : "Prevents Chat Reports?",
+                status.PreventsChatReports ? "\u2705" : "\u274c",
+                true);
 
         if (status.ModInfo is not null)
         {
-            embed.AddField("Modloader Type", status.ModInfo.Type);
-            embed.AddField("Mods Count", status.ModInfo.ModList.Count(), true);
+            embed.AddField(locale is "de" ? "Modloader Typ" : "Modloader Type", status.ModInfo.Type);
+            embed.AddField(locale is "de" ? "Mod Anzahl" : "Mods Count", status.ModInfo.ModList.Count(), true);
         }
+
+        if (status.Players.Sample is not null && status.Players.Sample.Any())
+            embed.WithDescription($"**{(locale is "de" ? "Spieler" : "Players")}:**\n- " +
+                                  string.Join("\n- ", status.Players.Sample.Select(player => player.Name)));
 
         return embed.Build();
     }
