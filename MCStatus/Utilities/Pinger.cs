@@ -1,6 +1,6 @@
 using System.Net.Sockets;
-using System.Text.Json;
 using MCStatus.Models;
+using Newtonsoft.Json;
 
 namespace MCStatus.Utilities;
 
@@ -83,7 +83,7 @@ public static class Pinger
         var payloadLength = DataCodec.DecodeVarInt(stream);
         var payload = DataCodec.DecodeString(stream, payloadLength);
 
-        return JsonSerializer.Deserialize<Status>(payload);
+        return JsonConvert.DeserializeObject<Status>(payload);
     }
 
     private static long ParsePingResponse(NetworkStream stream)

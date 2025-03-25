@@ -1,31 +1,37 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MCStatus.Models;
 
-public class Status(
-    Version version,
-    Players players,
-    Description description,
-    string favIcon,
-    bool enforcesSecureChat,
-    bool preventsChatReports,
-    ModInfo? modInfo = null)
+public class Status
 {
-    [JsonPropertyName("version")] public required Version Version { get; init; } = version;
+    [JsonProperty("version")] public Version? Version { get; set; }
 
-    [JsonPropertyName("players")] public required Players Players { get; init; } = players;
+    [JsonProperty("players")] public Players? Players { get; set; }
 
-    [JsonPropertyName("description")] public required Description Description { get; init; } = description;
+    [JsonProperty("description")] public JToken? DescriptionRaw { get; set; }
 
-    [JsonPropertyName("favicon")] public required string FavIcon { get; init; } = favIcon;
+    [JsonIgnore]
+    public string? Description
+    {
+        get
+        {
+            return DescriptionRaw?.Type switch
+            {
+                JTokenType.String => DescriptionRaw.ToString(),
+                JTokenType.Object when DescriptionRaw["text"] is not null => DescriptionRaw["text"]?.ToString(),
+                _ => null
+            };
+        }
+    }
 
-    [JsonPropertyName("enforcesSecureChat")]
-    public required bool EnforcesSecureChat { get; init; } = enforcesSecureChat;
+    [JsonProperty("favicon")] public string? FavIcon { get; set; }
 
-    [JsonPropertyName("preventsChatReports")]
-    public required bool PreventsChatReports { get; init; } = preventsChatReports;
+    [JsonProperty("enforcesSecureChat")] public bool EnforcesSecureChat { get; set; }
 
-    [JsonPropertyName("modinfo")] public ModInfo? ModInfo { get; init; } = modInfo;
+    [JsonProperty("preventsChatReports")] public bool PreventsChatReports { get; set; }
+
+    [JsonProperty("modinfo")] public ModInfo? ModInfo { get; set; }
 
     [JsonIgnore] public double Ping { get; set; }
 }

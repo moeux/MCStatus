@@ -68,6 +68,15 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(status.FavIcon))
+            {
+                await command.FollowupAsync(
+                    embed: CreateEmbed(ipOrDomain, port, status, command.UserLocale),
+                    options: GetRequestOptions(cancellationToken)
+                );
+                return;
+            }
+
             // The FavIcon string is prefixed with data:image/png;base64,<data>, so we create a substring first
             var bytes = Convert.FromBase64String(status.FavIcon[(status.FavIcon.LastIndexOf(',') + 1)..]);
             using var stream = new MemoryStream(bytes);
@@ -75,7 +84,7 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
 
             await command.FollowupWithFileAsync(
                 fileAttachment,
-                embed: CreateEmbed(ipOrDomain, port, fileAttachment.FileName, status, command.UserLocale),
+                embed: CreateEmbed(ipOrDomain, port, status, command.UserLocale, fileAttachment.FileName),
                 options: GetRequestOptions(cancellationToken)
             );
         }
@@ -144,20 +153,20 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
             );
     }
 
-    private static Embed CreateEmbed(string ipOrDomain, ushort port, string fileName, Status status, string locale)
+    private static Embed CreateEmbed(string ipOrDomain, ushort port, Status status, string locale,
+        string? fileName = null)
     {
         var embed = new EmbedBuilder();
 
         embed.WithTitle($"{ipOrDomain}:{port}")
             .WithColor(GetGradientColor(status.Ping))
             .WithCurrentTimestamp()
-            .WithThumbnailUrl($"attachment://{fileName}")
-            .AddField(locale is "de" ? "Beschreibung" : "Description", status.Description.Text)
-            .AddField(locale is "de" ? "Online Spieler" : "Online Players", status.Players.Online, true)
-            .AddField(locale is "de" ? "Maximale Spieleranzahl" : "Max Players", status.Players.Max, true)
+            .AddField(locale is "de" ? "Beschreibung" : "Description", status.Description)
+            .AddField(locale is "de" ? "Online Spieler" : "Online Players", GetField(status.Players?.Online), true)
+            .AddField(locale is "de" ? "Maximale Spieleranzahl" : "Max Players", GetField(status.Players?.Max), true)
             // Empty field for layout purposes
             .AddField("\u200B", "\u200B", true)
-            .AddField("Version", status.Version.ToString(), true)
+            .AddField("Version", GetField(status.Version), true)
             .AddField("Ping", $"{status.Ping:F2} ms", true)
             // Empty field for layout purposes
             .AddField("\u200B", "\u200B", true)
@@ -170,16 +179,23 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
                 status.PreventsChatReports ? "\u2705" : "\u274c",
                 true);
 
+        if (!string.IsNullOrWhiteSpace(fileName)) embed.WithThumbnailUrl($"attachment://{fileName}");
+
         if (status.ModInfo is not null)
         {
             embed.AddField(locale is "de" ? "Modloader Typ" : "Modloader Type", status.ModInfo.Type);
             embed.AddField(locale is "de" ? "Mod Anzahl" : "Mods Count", status.ModInfo.ModList.Count(), true);
         }
 
-        if (status.Players.Sample is not null && status.Players.Sample.Any())
+        if (status.Players?.Sample is not null && status.Players.Sample.Any())
             embed.WithDescription($"**{(locale is "de" ? "Spieler" : "Players")}:**\n- " +
                                   string.Join("\n- ", status.Players.Sample.Select(player => player.Name)));
 
         return embed.Build();
+    }
+
+    private static string GetField(object? o)
+    {
+        return o?.ToString() ?? "N/A";
     }
 }
