@@ -88,12 +88,12 @@ public class StatusCommand(StatusQueryService service) : ICommandHandler
                 options: GetRequestOptions(cancellationToken)
             );
         }
-        catch (Exception)
+        catch (Exception e)
         {
             await Followup(
                 command,
-                "Unfortunately this did not work, please check your input!",
-                "Das hat leider nicht funktioniert, bitte überprüfe deine Angaben!",
+                $"Unfortunately this did not work, please check your input!\nError: `{e.Message}`",
+                $"Das hat leider nicht funktioniert, bitte überprüfe deine Angaben!\nFehler: `{e.Message}`",
                 cancellationToken
             );
         }
